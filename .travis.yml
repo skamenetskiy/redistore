@@ -17,7 +17,6 @@ install:
 
 script:
   - diff -u <(echo -n) <(gofmt -d .)
-  - go tool vet .
   - go test -v -race -covermode=atomic -coverprofile=coverage.out
 
 after_success:
