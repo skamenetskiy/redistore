@@ -1,25 +1,24 @@
 language: go
 sudo: false
 
+go:
+  - 1.11.x
+  - 1.12.x
+  - master
+
 services:
   - redis-server
 
-matrix:
-  include:
-    - go: 1.5
-    - go: 1.6
-    - go: 1.7
-    - go: 1.8
-    - go: 1.9
-    - go: tip
-  allow_failures:
-    - go: tip
+before_install:
+  - go get github.com/golang/dep/cmd/dep
 
 install:
-  - # skip
+  - dep ensure
 
 script:
-  - go get -t -v ./...
   - diff -u <(echo -n) <(gofmt -d .)
   - go tool vet .
-  - go test -v -race ./...
+  - go test -v -race -covermode=atomic -coverprofile=coverage.out
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
